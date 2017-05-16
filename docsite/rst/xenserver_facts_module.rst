@@ -1,0 +1,56 @@
+.. _xenserver_facts:
+
+
+xenserver_facts - get facts reported on xenserver
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. versionadded:: 2.0
+
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Reads data out of XenAPI, can be used instead of multiple xe commands.
+
+
+
+
+
+
+Examples
+--------
+
+ ::
+
+    - name: Gather facts from xenserver
+       xenserver:
+    
+    - name: Print running VMs
+      debug: msg="{{ item }}"
+      with_items: xs_vms.keys()
+      when: xs_vms[item]['power_state'] == "Running"
+    
+    TASK: [Print running VMs] ***********************************************************
+    skipping: [10.13.0.22] => (item=CentOS 4.7 (32-bit))
+    ok: [10.13.0.22] => (item=Control domain on host: 10.0.13.22) => {
+        "item": "Control domain on host: 10.0.13.22",
+        "msg": "Control domain on host: 10.0.13.22"
+    }
+
+
+
+
+    
+This is an Extras Module
+------------------------
+
+For more information on what this means please read :doc:`modules_extra`
+
+    
+For help in developing on modules, should you be so inclined, please read :doc:`community`, :doc:`developing_test_pr` and :doc:`developing_modules`.
+
