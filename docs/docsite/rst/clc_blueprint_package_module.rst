@@ -1,0 +1,138 @@
+.. _clc_blueprint_package:
+
+
+clc_blueprint_package - deploys a blue print package on a set of servers in CenturyLink Cloud.
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. versionadded:: 2.0
+
+
+.. contents::
+   :local:
+   :depth: 2
+
+
+Synopsis
+--------
+
+* An Ansible module to deploy blue print package on a set of servers in CenturyLink Cloud.
+
+
+Requirements (on host that executes module)
+-------------------------------------------
+
+  * python = 2.7
+  * requests >= 2.5.0
+  * clc-sdk
+
+
+Options
+-------
+
+.. raw:: html
+
+    <table border=1 cellpadding=4>
+    <tr>
+    <th class="head">parameter</th>
+    <th class="head">required</th>
+    <th class="head">default</th>
+    <th class="head">choices</th>
+    <th class="head">comments</th>
+    </tr>
+                <tr><td>package_id<br/><div style="font-size: small;"></div></td>
+    <td>yes</td>
+    <td></td>
+        <td></td>
+        <td><div>The package id of the blue print.</div>        </td></tr>
+                <tr><td>package_params<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>The dictionary of arguments required to deploy the blue print.</div>        </td></tr>
+                <tr><td>server_ids<br/><div style="font-size: small;"></div></td>
+    <td>yes</td>
+    <td></td>
+        <td></td>
+        <td><div>A list of server Ids to deploy the blue print package.</div>        </td></tr>
+                <tr><td>state<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td>present</td>
+        <td><ul><li>present</li></ul></td>
+        <td><div>Whether to install or un-install the package. Currently it supports only "present" for install action.</div>        </td></tr>
+                <tr><td>wait<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td>True</td>
+        <td><ul><li>True</li><li>False</li></ul></td>
+        <td><div>Whether to wait for the tasks to finish before returning.</div>        </td></tr>
+        </table>
+    </br>
+
+
+
+Examples
+--------
+
+ ::
+
+    # Note - You must set the CLC_V2_API_USERNAME And CLC_V2_API_PASSWD Environment variables before running these examples
+    
+    - name: Deploy package
+      clc_blueprint_package:
+            server_ids:
+                - UC1TEST-SERVER1
+                - UC1TEST-SERVER2
+            package_id: 77abb844-579d-478d-3955-c69ab4a7ba1a
+            package_params: {}
+
+Return Values
+-------------
+
+Common return values are documented here :doc:`common_return_values`, the following are the fields unique to this module:
+
+.. raw:: html
+
+    <table border=1 cellpadding=4>
+    <tr>
+    <th class="head">name</th>
+    <th class="head">description</th>
+    <th class="head">returned</th>
+    <th class="head">type</th>
+    <th class="head">sample</th>
+    </tr>
+
+        <tr>
+        <td> server_ids </td>
+        <td> The list of server ids that are changed </td>
+        <td align=center> success </td>
+        <td align=center> list </td>
+        <td align=center> ['UC1TEST-SERVER1', 'UC1TEST-SERVER2'] </td>
+    </tr>
+        
+    </table>
+    </br></br>
+
+Notes
+-----
+
+.. note::
+    - To use this module, it is required to set the below environment variables which enables access to the Centurylink Cloud - CLC_V2_API_USERNAME, the account login id for the centurylink cloud - CLC_V2_API_PASSWORD, the account password for the centurylink cloud
+    - Alternatively, the module accepts the API token and account alias. The API token can be generated using the CLC account login and password via the HTTP api call @ https://api.ctl.io/v2/authentication/login - CLC_V2_API_TOKEN, the API token generated from https://api.ctl.io/v2/authentication/login - CLC_ACCT_ALIAS, the account alias associated with the centurylink cloud
+    - Users can set CLC_V2_API_URL to specify an endpoint for pointing to a different CLC environment.
+
+
+
+Status
+~~~~~~
+
+This module is flagged as **preview** which means that it is not guaranteed to have a backwards compatible interface.
+
+
+Support
+~~~~~~~
+
+This module is community maintained without core committer oversight.
+
+For more information on what this means please read :doc:`modules_support`
+
+
+For help in developing on modules, should you be so inclined, please read :doc:`community`, :doc:`dev_guide/developing_test_pr` and :doc:`dev_guide/developing_modules`.

@@ -1,0 +1,313 @@
+.. _ec2_vol:
+
+
+ec2_vol - create and attach a volume, return volume id and device map
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+.. contents::
+   :local:
+   :depth: 2
+
+
+Synopsis
+--------
+
+* creates an EBS volume and optionally attaches it to an instance. If both an instance ID and a device name is given and the instance has a device at the device name, then no volume is created and no attachment is made. This module has a dependency on python-boto.
+
+
+Requirements (on host that executes module)
+-------------------------------------------
+
+  * python >= 2.6
+  * boto
+
+
+Options
+-------
+
+.. raw:: html
+
+    <table border=1 cellpadding=4>
+    <tr>
+    <th class="head">parameter</th>
+    <th class="head">required</th>
+    <th class="head">default</th>
+    <th class="head">choices</th>
+    <th class="head">comments</th>
+    </tr>
+                <tr><td>aws_access_key<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>AWS access key. If not set then the value of the AWS_ACCESS_KEY_ID, AWS_ACCESS_KEY or EC2_ACCESS_KEY environment variable is used.</div></br>
+    <div style="font-size: small;">aliases: ec2_access_key, access_key<div>        </td></tr>
+                <tr><td>aws_secret_key<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>AWS secret key. If not set then the value of the AWS_SECRET_ACCESS_KEY, AWS_SECRET_KEY, or EC2_SECRET_KEY environment variable is used.</div></br>
+    <div style="font-size: small;">aliases: ec2_secret_key, secret_key<div>        </td></tr>
+                <tr><td>delete_on_termination<br/><div style="font-size: small;"> (added in 2.1)</div></td>
+    <td>no</td>
+    <td>no</td>
+        <td><ul><li>yes</li><li>no</li></ul></td>
+        <td><div>When set to "yes", the volume will be deleted upon instance termination.</div>        </td></tr>
+                <tr><td>device_name<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>device id to override device mapping. Assumes /dev/sdf for Linux/UNIX and /dev/xvdf for Windows.</div>        </td></tr>
+                <tr><td>ec2_url<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>Url to use to connect to EC2 or your Eucalyptus cloud (by default the module will use EC2 endpoints). Ignored for modules where region is required. Must be specified for all other modules if region is not used. If not set then the value of the EC2_URL environment variable, if any, is used.</div>        </td></tr>
+                <tr><td>encrypted<br/><div style="font-size: small;"> (added in 1.8)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>Enable encryption at rest for this volume.</div>        </td></tr>
+                <tr><td>id<br/><div style="font-size: small;"> (added in 1.6)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>volume id if you wish to attach an existing volume (requires instance) or remove an existing volume</div>        </td></tr>
+                <tr><td>instance<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>instance ID if you wish to attach the volume. Since 1.9 you can set to None to detach.</div>        </td></tr>
+                <tr><td>iops<br/><div style="font-size: small;"> (added in 1.3)</div></td>
+    <td>no</td>
+    <td>100</td>
+        <td></td>
+        <td><div>the provisioned IOPs you want to associate with this volume (integer).</div>        </td></tr>
+                <tr><td>kms_key_id<br/><div style="font-size: small;"> (added in 2.3)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>Specify the id of the KMS key to use.</div>        </td></tr>
+                <tr><td>name<br/><div style="font-size: small;"> (added in 1.6)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>volume Name tag if you wish to attach an existing volume (requires instance)</div>        </td></tr>
+                <tr><td>profile<br/><div style="font-size: small;"> (added in 1.6)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>Uses a boto profile. Only works with boto &gt;= 2.24.0.</div>        </td></tr>
+                <tr><td>region<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>The AWS region to use. If not specified then the value of the AWS_REGION or EC2_REGION environment variable, if any, is used. See <a href='http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region'>http://docs.aws.amazon.com/general/latest/gr/rande.html#ec2_region</a></div></br>
+    <div style="font-size: small;">aliases: aws_region, ec2_region<div>        </td></tr>
+                <tr><td>security_token<br/><div style="font-size: small;"> (added in 1.6)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>AWS STS security token. If not set then the value of the AWS_SECURITY_TOKEN or EC2_SECURITY_TOKEN environment variable is used.</div></br>
+    <div style="font-size: small;">aliases: access_token<div>        </td></tr>
+                <tr><td>snapshot<br/><div style="font-size: small;"> (added in 1.5)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>snapshot ID on which to base the volume</div>        </td></tr>
+                <tr><td>state<br/><div style="font-size: small;"> (added in 1.6)</div></td>
+    <td>no</td>
+    <td>present</td>
+        <td><ul><li>absent</li><li>present</li><li>list</li></ul></td>
+        <td><div>whether to ensure the volume is present or absent, or to list existing volumes (The <code>list</code> option was added in version 1.8).</div>        </td></tr>
+                <tr><td>tags<br/><div style="font-size: small;"> (added in 2.3)</div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>tag:value pairs to add to the volume after creation</div>        </td></tr>
+                <tr><td>validate_certs<br/><div style="font-size: small;"> (added in 1.5)</div></td>
+    <td>no</td>
+    <td>yes</td>
+        <td><ul><li>yes</li><li>no</li></ul></td>
+        <td><div>When set to "no", SSL certificates will not be validated for boto versions &gt;= 2.6.0.</div>        </td></tr>
+                <tr><td>volume_size<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>size of volume (in GB) to create.</div>        </td></tr>
+                <tr><td>volume_type<br/><div style="font-size: small;"> (added in 1.9)</div></td>
+    <td>no</td>
+    <td>standard</td>
+        <td></td>
+        <td><div>Type of EBS volume; standard (magnetic), gp2 (SSD), io1 (Provisioned IOPS), st1 (Throughput Optimized HDD), sc1 (Cold HDD). "Standard" is the old EBS default and continues to remain the Ansible default for backwards compatibility.</div>        </td></tr>
+                <tr><td>zone<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td></td>
+        <td><div>zone in which to create the volume, if unset uses the zone the instance is in (if set)</div></br>
+    <div style="font-size: small;">aliases: aws_zone, ec2_zone<div>        </td></tr>
+        </table>
+    </br>
+
+
+
+Examples
+--------
+
+ ::
+
+    # Simple attachment action
+    - ec2_vol:
+        instance: XXXXXX
+        volume_size: 5
+        device_name: sdd
+    
+    # Example using custom iops params
+    - ec2_vol:
+        instance: XXXXXX
+        volume_size: 5
+        iops: 100
+        device_name: sdd
+    
+    # Example using snapshot id
+    - ec2_vol:
+        instance: XXXXXX
+        snapshot: "{{ snapshot }}"
+    
+    # Playbook example combined with instance launch
+    - ec2:
+        keypair: "{{ keypair }}"
+        image: "{{ image }}"
+        wait: yes
+        count: 3
+      register: ec2
+    - ec2_vol:
+        instance: "{{ item.id }} "
+        volume_size: 5
+      with_items: "{{ ec2.instances }}"
+      register: ec2_vol
+    
+    # Example: Launch an instance and then add a volume if not already attached
+    #   * Volume will be created with the given name if not already created.
+    #   * Nothing will happen if the volume is already attached.
+    #   * Requires Ansible 2.0
+    
+    - ec2:
+        keypair: "{{ keypair }}"
+        image: "{{ image }}"
+        zone: YYYYYY
+        id: my_instance
+        wait: yes
+        count: 1
+      register: ec2
+    
+    - ec2_vol:
+        instance: "{{ item.id }}"
+        name: my_existing_volume_Name_tag
+        device_name: /dev/xvdf
+      with_items: "{{ ec2.instances }}"
+      register: ec2_vol
+    
+    # Remove a volume
+    - ec2_vol:
+        id: vol-XXXXXXXX
+        state: absent
+    
+    # Detach a volume (since 1.9)
+    - ec2_vol:
+        id: vol-XXXXXXXX
+        instance: None
+    
+    # List volumes for an instance
+    - ec2_vol:
+        instance: i-XXXXXX
+        state: list
+    
+    # Create new volume using SSD storage
+    - ec2_vol:
+        instance: XXXXXX
+        volume_size: 50
+        volume_type: gp2
+        device_name: /dev/xvdf
+    
+    # Attach an existing volume to instance. The volume will be deleted upon instance termination.
+    - ec2_vol:
+        instance: XXXXXX
+        id: XXXXXX
+        device_name: /dev/sdf
+        delete_on_termination: yes
+
+Return Values
+-------------
+
+Common return values are documented here :doc:`common_return_values`, the following are the fields unique to this module:
+
+.. raw:: html
+
+    <table border=1 cellpadding=4>
+    <tr>
+    <th class="head">name</th>
+    <th class="head">description</th>
+    <th class="head">returned</th>
+    <th class="head">type</th>
+    <th class="head">sample</th>
+    </tr>
+
+        <tr>
+        <td> device </td>
+        <td> device name of attached volume </td>
+        <td align=center> when success </td>
+        <td align=center> string </td>
+        <td align=center> /def/sdf </td>
+    </tr>
+            <tr>
+        <td> volume </td>
+        <td> a dictionary containing detailed attributes of the volume </td>
+        <td align=center> when success </td>
+        <td align=center> string </td>
+        <td align=center> {'status': 'in-use', 'zone': 'us-east-1b', 'tags': {'env': 'dev'}, 'encrypted': False, 'iops': None, 'create_time': '2015-10-21T14:36:08.870Z', 'snapshot_id': '', 'attachment_set': {'device': '/dev/sdf', 'instance_id': 'i-8356263c', 'deleteOnTermination': 'false', 'status': 'attached', 'attach_time': '2015-10-23T00:22:29.000Z'}, 'type': 'standard', 'id': 'vol-35b333d9', 'size': 1} </td>
+    </tr>
+            <tr>
+        <td> volume_type </td>
+        <td> the volume type </td>
+        <td align=center> when success </td>
+        <td align=center> string </td>
+        <td align=center> standard </td>
+    </tr>
+            <tr>
+        <td> volume_id </td>
+        <td> the id of volume </td>
+        <td align=center> when success </td>
+        <td align=center> string </td>
+        <td align=center> vol-35b333d9 </td>
+    </tr>
+        
+    </table>
+    </br></br>
+
+Notes
+-----
+
+.. note::
+    - If parameters are not set within the module, the following environment variables can be used in decreasing order of precedence ``AWS_URL`` or ``EC2_URL``, ``AWS_ACCESS_KEY_ID`` or ``AWS_ACCESS_KEY`` or ``EC2_ACCESS_KEY``, ``AWS_SECRET_ACCESS_KEY`` or ``AWS_SECRET_KEY`` or ``EC2_SECRET_KEY``, ``AWS_SECURITY_TOKEN`` or ``EC2_SECURITY_TOKEN``, ``AWS_REGION`` or ``EC2_REGION``
+    - Ansible uses the boto configuration file (typically ~/.boto) if no credentials are provided. See http://boto.readthedocs.org/en/latest/boto_config_tut.html
+    - ``AWS_REGION`` or ``EC2_REGION`` can be typically be used to specify the AWS region, when required, but this can also be configured in the boto config file
+
+
+
+Status
+~~~~~~
+
+This module is flagged as **stableinterface** which means that the maintainers for this module guarantee that no backward incompatible interface changes will be made.
+
+
+Support
+~~~~~~~
+
+This module is supported mainly by the community and is curated by core committers.
+
+For more information on what this means please read :doc:`modules_support`
+
+
+For help in developing on modules, should you be so inclined, please read :doc:`community`, :doc:`dev_guide/developing_test_pr` and :doc:`dev_guide/developing_modules`.
