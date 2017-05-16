@@ -25,8 +25,6 @@ import os
 # absolute, like shown here.
 #sys.path.append(os.path.abspath('some/directory'))
 #
-sys.path.insert(0, os.path.join('ansible', 'lib'))
-sys.path.append(os.path.abspath('_themes'))
 
 VERSION='2.1'
 AUTHOR='Ansible, Inc'
@@ -121,8 +119,9 @@ rst_epilog = """
 # Options for HTML output
 # -----------------------
 
-html_theme_path = ['_themes']
-html_theme = 'srtd'
+import sphinx_rtd_theme
+html_theme = "sphinx_rtd_theme"
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_short_title = 'Ansible Documentation'
 
 # The style sheet to use for HTML and HTML Help pages. A file of that name
