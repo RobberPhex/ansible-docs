@@ -1,0 +1,173 @@
+.. _pip:
+
+
+pip - Manages Python library dependencies.
+++++++++++++++++++++++++++++++++++++++++++
+
+
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+Manage Python library dependencies. To use this module, one of the following keys is required: ``name`` or ``requirements``.
+
+
+Requirements
+------------
+
+  * virtualenv
+  * pip
+
+
+Options
+-------
+
+.. raw:: html
+
+    <table border=1 cellpadding=4>
+    <tr>
+    <th class="head">parameter</th>
+    <th class="head">required</th>
+    <th class="head">default</th>
+    <th class="head">choices</th>
+    <th class="head">comments</th>
+    </tr>
+            <tr>
+    <td>chdir<br/><div style="font-size: small;"> (added in 1.3)</div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>cd into this directory before running the command</div></td></tr>
+            <tr>
+    <td>editable<br/><div style="font-size: small;"> (added in 2.0)</div></td>
+    <td>no</td>
+    <td>True</td>
+        <td><ul></ul></td>
+        <td><div>Pass the editable flag for versioning URLs.</div></td></tr>
+            <tr>
+    <td>executable<br/><div style="font-size: small;"> (added in 1.3)</div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>The explicit executable or a pathname to the executable to be used to run pip for a specific version of Python installed in the system. For example <code>pip-3.3</code>, if there are both Python 2.7 and 3.3 installations in the system and you want to run pip for the Python 3.3 installation.</div></td></tr>
+            <tr>
+    <td>extra_args<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>Extra arguments passed to pip.</div></td></tr>
+            <tr>
+    <td>name<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>The name of a Python library to install or the url of the remote package.</div></td></tr>
+            <tr>
+    <td>requirements<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>The path to a pip requirements file</div></td></tr>
+            <tr>
+    <td>state<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td>present</td>
+        <td><ul><li>present</li><li>absent</li><li>latest</li></ul></td>
+        <td><div>The state of module</div></td></tr>
+            <tr>
+    <td>version<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>The version number to install of the Python library specified in the <em>name</em> parameter</div></td></tr>
+            <tr>
+    <td>virtualenv<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>An optional path to a <em>virtualenv</em> directory to install into</div></td></tr>
+            <tr>
+    <td>virtualenv_command<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td>virtualenv</td>
+        <td><ul></ul></td>
+        <td><div>The command or a pathname to the command to create the virtual environment with. For example <code>pyvenv</code>, <code>virtualenv</code>, <code>virtualenv2</code>, <code>~/bin/virtualenv</code>, <code>/usr/local/bin/virtualenv</code>.</div></td></tr>
+            <tr>
+    <td>virtualenv_python<br/><div style="font-size: small;"> (added in 2.0)</div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>The Python executable used for creating the virtual environment. For example <code>python3.4</code>, <code>python2.7</code>. When not specified, the system Python version is used.</div></td></tr>
+            <tr>
+    <td>virtualenv_site_packages<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td>no</td>
+        <td><ul><li>yes</li><li>no</li></ul></td>
+        <td><div>Whether the virtual environment will inherit packages from the global site-packages directory.  Note that if this setting is changed on an already existing virtual environment it will not have any effect, the environment must be deleted and newly created.</div></td></tr>
+        </table>
+    </br>
+
+
+
+Examples
+--------
+
+ ::
+
+    # Install (Bottle) python package.
+    - pip: name=bottle
+    
+    # Install (Bottle) python package on version 0.11.
+    - pip: name=bottle version=0.11
+    
+    # Install (MyApp) using one of the remote protocols (bzr+,hg+,git+,svn+). You do not have to supply '-e' option in extra_args.
+    - pip: name='svn+http://myrepo/svn/MyApp#egg=MyApp'
+    
+    # Install MyApp using one of the remote protocols (bzr+,hg+,git+) in a non editable way.
+    - pip: name='git+http://myrepo/app/MyApp' editable=false
+    
+    # Install (MyApp) from local tarball
+    - pip: name='file:///path/to/MyApp.tar.gz'
+    
+    # Install (Bottle) into the specified (virtualenv), inheriting none of the globally installed modules
+    - pip: name=bottle virtualenv=/my_app/venv
+    
+    # Install (Bottle) into the specified (virtualenv), inheriting globally installed modules
+    - pip: name=bottle virtualenv=/my_app/venv virtualenv_site_packages=yes
+    
+    # Install (Bottle) into the specified (virtualenv), using Python 2.7
+    - pip: name=bottle virtualenv=/my_app/venv virtualenv_command=virtualenv-2.7
+    
+    # Install specified python requirements.
+    - pip: requirements=/my_app/requirements.txt
+    
+    # Install specified python requirements in indicated (virtualenv).
+    - pip: requirements=/my_app/requirements.txt virtualenv=/my_app/venv
+    
+    # Install specified python requirements and custom Index URL.
+    - pip: requirements=/my_app/requirements.txt extra_args='-i https://example.com/pypi/simple'
+    
+    # Install (Bottle) for Python 3.3 specifically,using the 'pip-3.3' executable.
+    - pip: name=bottle executable=pip-3.3
+
+
+Notes
+-----
+
+.. note:: Please note that virtualenv (http://www.virtualenv.org/) must be installed on the remote host if the virtualenv parameter is specified and the virtualenv needs to be initialized.
+
+
+    
+This is a Core Module
+---------------------
+
+For more information on what this means please read :doc:`modules_core`
+
+    
+For help in developing on modules, should you be so inclined, please read :doc:`community`, :doc:`developing_test_pr` and :doc:`developing_modules`.
+

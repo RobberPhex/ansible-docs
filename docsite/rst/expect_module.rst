@@ -1,0 +1,114 @@
+.. _expect:
+
+
+expect - Executes a command and responds to prompts
++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+.. versionadded:: 2.0
+
+
+.. contents::
+   :local:
+   :depth: 1
+
+
+Synopsis
+--------
+
+The :ref:`expect <expect>` module executes a command and responds to prompts
+The given command will be executed on all selected nodes. It will not be processed through the shell, so variables like ``$HOME`` and operations like ``"<"``, ``">"``, ``"|"``, and ``"&"`` will not work
+
+
+Requirements
+------------
+
+  * python >= 2.6
+  * pexpect >= 3.3
+
+
+Options
+-------
+
+.. raw:: html
+
+    <table border=1 cellpadding=4>
+    <tr>
+    <th class="head">parameter</th>
+    <th class="head">required</th>
+    <th class="head">default</th>
+    <th class="head">choices</th>
+    <th class="head">comments</th>
+    </tr>
+            <tr>
+    <td>chdir<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>cd into this directory before running the command</div></td></tr>
+            <tr>
+    <td>command<br/><div style="font-size: small;"></div></td>
+    <td>yes</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>the command module takes command to run.</div></td></tr>
+            <tr>
+    <td>creates<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>a filename, when it already exists, this step will <b>not</b> be run.</div></td></tr>
+            <tr>
+    <td>echo<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>Whether or not to echo out your response strings</div></td></tr>
+            <tr>
+    <td>removes<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>a filename, when it does not exist, this step will <b>not</b> be run.</div></td></tr>
+            <tr>
+    <td>responses<br/><div style="font-size: small;"></div></td>
+    <td>yes</td>
+    <td></td>
+        <td><ul></ul></td>
+        <td><div>Mapping of expected string and string to respond with</div></td></tr>
+            <tr>
+    <td>timeout<br/><div style="font-size: small;"></div></td>
+    <td>no</td>
+    <td>30</td>
+        <td><ul></ul></td>
+        <td><div>Amount of time in seconds to wait for the expected strings</div></td></tr>
+        </table>
+    </br>
+
+
+
+Examples
+--------
+
+ ::
+
+    - expect:
+        command: passwd username
+        responses:
+          (?i)password: "MySekretPa$$word"
+
+
+Notes
+-----
+
+.. note:: If you want to run a command through the shell (say you are using ``<``, ``>``, ``|``, etc), you must specify a shell in the command such as ``/bin/bash -c "/path/to/something | grep else"``
+
+
+    
+This is an Extras Module
+------------------------
+
+For more information on what this means please read :doc:`modules_extra`
+
+    
+For help in developing on modules, should you be so inclined, please read :doc:`community`, :doc:`developing_test_pr` and :doc:`developing_modules`.
+
